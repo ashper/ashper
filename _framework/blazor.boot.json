@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "Microsoft.AspNetCore.Components.dll": "sha256-d0BOpOq05KhX61RTR6PBnL28+4ZKDCrHvWhdzYP6jDc=",
+      "Microsoft.AspNetCore.Components.dll": "sha256-CjjvwRkOIuVywc7BqzAC4HR7wajqNYjGgTAIcWPvXMo=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-v6ZdIBCV\/psXFrdudqI5UG8fQuYrZhSZK\/\/9zVHgcOM=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-MiD\/rIyI518xU0g+ekCzYeZdc0Cx8V0ua\/rMpRQ+MUY=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-DYlYq6AyshFWndZ84IblLtu5vXu3527Y3\/aipmXSJ8U=",
@@ -22,7 +22,7 @@
       "Microsoft.Extensions.Primitives.dll": "sha256-Kk9trPYi6xuop+bJh7AertZVcNJkEyzyxW3andlyf5U=",
       "Microsoft.JSInterop.dll": "sha256-m82xDen2NNkvGC3Y5Eow4BXvcaGiSJaak+ra+TZNutI=",
       "Microsoft.JSInterop.WebAssembly.dll": "sha256-wyM9B7XzO9VREzsboWVp7syOBqNeNxbqOn5dRulUePk=",
-      "Ryuutama.dll": "sha256-jvbJBD1RvUz7ML+VLPqtbSBWsVq\/fDDChhTULJRpc0o=",
+      "Ryuutama.dll": "sha256-h9QQ7YUCuOua+l+NgzONggmq7kX\/B90tb+YIikKim48=",
       "System.Collections.Concurrent.dll": "sha256-ljM3TPImyvQ6i8+jIPAUROpsxfrdwOjvSOwGn+Ws08I=",
       "System.Collections.dll": "sha256-TbmQs2By0rpIjkxMvhZxZ+ti76hBLSGcwQuOXYAFq6M=",
       "System.Collections.NonGeneric.dll": "sha256-mmV5MKRpr05pynRR6UlzRrEmippol+Kcch5\/MdhsxOM=",
