@@ -1,0 +1,122 @@
+﻿@page "/container"
+@using System.ComponentModel.DataAnnotations;
+@using static Ryuutama.Pages.Index.Storage;
+@using static Ryuutama.Pages.Index;
+@inject LocalStorageAccessor LocalStorage;
+
+<h3>
+    @if (EditName)
+    {
+        <input class="form-control" type="text"
+               style="background-color:lightyellow;"
+               value="@Storage.Name"
+           @oninput="@(e => { Storage.Name = e.Value.ToString(); })" />
+    }
+    else
+    {
+        @Storage.Name
+    }
+    @if (AllowNameEdit)
+    {
+        <button type="button" class="btn btn-primary" style="margin-left:10px;"
+            @onclick="@(async () => { EditName = !EditName; await OnChanged.InvokeAsync(Id);})">
+            @(
+                EditName ? "Save" : "Edit"
+                )
+        </button>
+    }
+</h3>
+
+
+<p>Capacity: <input @bind="Storage.Capacity" @bind:event="oninput" />  Remaining: @Storage.RemainingCapacity</p>
+
+<table>
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Size</th>
+            <th scope="col">Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Storage.Items)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Size</td>
+                <td>@item.Value</td>
+                <td>
+                    <button @onclick="async () => {Storage.Items.Remove(item); await OnChanged.InvokeAsync(Id);}">
+                        X
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<EditForm Model="@newItem" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label>
+        Name:
+        <InputText id="newName" @bind-Value="newItem.NewName" />
+    </label>
+
+    <label>
+        Size:
+        <InputNumber @bind-Value="newItem.NewSize" />
+    </label>
+
+    <label>
+        Value:
+        <InputNumber @bind-Value="newItem.NewValue" />
+    </label>
+
+    <button type="submit">+</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public Storage Storage { get; set; }
+
+    [Parameter]
+    public bool AllowNameEdit { get; set; } = true;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnChanged { get; set; }
+
+    public bool EditName { get; set; } = false;
+
+    private NewItem newItem = new();
+
+    private async void HandleValidSubmit()
+    {
+        Storage.Items.Add(new Item()
+            {
+                Name = newItem.NewName,
+                Size = newItem.NewSize,
+                Value = newItem.NewValue
+            });
+
+        await OnChanged.InvokeAsync(Id);
+    }
+
+    public class NewItem
+    {
+        [Required]
+        [StringLength(50, ErrorMessage = "Name is too long.", MinimumLength = 2)]
+        public string? NewName { get; set; }
+
+        [Required]
+        public int NewSize { get; set; }
+
+        [Required]
+        public int NewValue { get; set; }
+    }
+}

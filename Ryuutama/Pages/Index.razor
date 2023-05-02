@@ -1,0 +1,99 @@
+﻿@page "/"
+@inject LocalStorageAccessor LocalStorage;
+
+<PageTitle>Storage</PageTitle>
+
+<h1>Ryuutama storage</h1>
+
+<StorageEditor Storage="Inventory" AllowNameEdit="false" OnChanged="@SaveChanges"></StorageEditor>
+<div style="border:1px solid grey; padding:10px; margin-top:10px; margin-bottom:10px;">
+
+@foreach (var storage in Storages)
+{
+    <StorageEditor Storage="storage" OnChanged="@SaveChanges"></StorageEditor>
+    <button @onclick="async () => {Storages.Remove(storage); await SaveChanges();}">
+        X
+    </button>
+}
+</div>
+
+<button @onclick="@AddNewBackpack">
+    Add New Backpack
+</button>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var inventory = await LocalStorage.GetValueAsync<Storage?>("Inv");
+        if(inventory == null)
+        {
+            Inventory = inventory = new Storage()
+                {
+                    Name = "Inventory"
+                };
+            await SaveChanges();
+        }
+        else
+        {
+            Inventory = inventory;
+        }
+        var storages = await LocalStorage.GetValueAsync<List<Storage>?>("Storages");
+        if(storages == null)
+        {
+            Storages = storages = new List<Storage>();
+            await SaveChanges();
+        }
+        else
+        {
+            Storages = storages;
+        }
+
+    }
+
+    public async Task AddNewBackpack()
+    {
+       Storages.Add(new Storage() { Name = "Backpack"}); 
+       await SaveChanges();
+    }
+
+    public async Task SaveChanges()
+    {
+        await LocalStorage.SetValueAsync("Inv", Inventory);
+        await LocalStorage.SetValueAsync("Storages", Storages);
+    }
+
+    public List<Storage> Storages = new();
+
+    public Storage Inventory = new();
+
+    public class Storage
+    {
+        public string Name { get; set; }
+
+        public int Capacity { get; set; }
+
+        public List<Item> Items { get; set; }
+
+        public Storage()
+        {
+            Items = new();
+        }
+
+        public int RemainingCapacity
+        {
+            get
+            {
+                return Capacity - Items.Sum(x => x.Size);
+
+            }
+        }
+
+        public class Item
+        {
+            public string Name { get; set; }
+            public int Size { get; set; }
+            public int Value { get; set; }
+        }
+    }
+}
