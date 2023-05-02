@@ -17,7 +17,7 @@ namespace Ryuutama
         {
             if (_accessorJsRef.IsValueCreated is false)
             {
-                _accessorJsRef = new(await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/LocalStorageAccessor.js"));
+                _accessorJsRef = new(await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/LocalStorageAccessor.js"));
             }
         }
 
