@@ -1,25 +1,43 @@
 ﻿@page "/"
 @inject LocalStorageAccessor LocalStorage;
 
-<PageTitle>Inventory</PageTitle>
+<PageTitle>Item Sheet</PageTitle>
 
-<h1>Inventory</h1>
+<h1>Item Sheet</h1>
+<p>
+    <label>
+        Character Name:
+        <input type="text" Value="@CharacterName" @onchange="@((ChangeEventArgs __e) => CharacterNameChanged(__e?.Value?.ToString()))" class="form-control" />
+    </label>
 
-<StorageEditor Storage="Inventory" AllowNameEdit="false" ShowTitle="false" OnChanged="@SaveChanges"></StorageEditor>
+    <label>
+        Player Name:
+        <input type="text" Value="@PlayerName" @onchange="@((ChangeEventArgs __e) => PlayerNameChanged(__e?.Value?.ToString()))" class="form-control" />
+    </label>
+</p>
+<p>
+    <label>
+        Currency:
+        <input type="text" Value="@CharacterName" @onchange="@((ChangeEventArgs __e) => CurrencyChanged(__e?.Value?.ToString()))" class="form-control" />
+    </label>
+</p>
 
-<div style="border:1px solid grey; padding:10px; margin-top:10px; margin-bottom:10px;">
+<div style="max-width:1000px">
+    <div class="m-3">
+        <StorageEditor Storage="Inventory" AllowNameEdit="false" ShowTitle="false" OnChanged="@SaveChanges"></StorageEditor>
+    </div>
 
-@foreach (var storage in Storages)
-{
-    <StorageEditor Storage="storage" OnChanged="@SaveChanges"></StorageEditor>
-    <button @onclick="async () => {Storages.Remove(storage); await SaveChanges();}">
-        X
-    </button>
-}
+    @foreach (var storage in Storages)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <StorageEditor Storage="storage" OnChanged="@SaveChanges" OnDelete="async () => {Storages.Remove(storage); await SaveChanges();}"></StorageEditor>
+            </div>
+        </div>
+    }
 
 </div>
-
-<button @onclick="@AddNewBackpack">
+<button @onclick="@AddNewBackpack" class="btn btn-primary">
     Add New Container
 </button>
 
@@ -28,7 +46,7 @@
     protected override async Task OnInitializedAsync()
     {
         var inventory = await LocalStorage.GetValueAsync<Storage?>("Inv");
-        if(inventory == null)
+        if (inventory == null)
         {
             Inventory = inventory = new Storage()
                 {
@@ -41,7 +59,7 @@
             Inventory = inventory;
         }
         var storages = await LocalStorage.GetValueAsync<List<Storage>?>("Storages");
-        if(storages == null)
+        if (storages == null)
         {
             Storages = storages = new List<Storage>();
             await SaveChanges();
@@ -50,24 +68,70 @@
         {
             Storages = storages;
         }
-
+        //var characterName = await LocalStorage.GetValueAsync<string>("CharacterName");
+        //var playerName = await LocalStorage.GetValueAsync<string>("PlayerName");
+        //var currency = await LocalStorage.GetValueAsync<int>("Currency");
     }
 
     public async Task AddNewBackpack()
     {
-       Storages.Add(new Storage() { Name = "Backpack"}); 
-       await SaveChanges();
+        Storages.Add(new Storage() { Name = "Backpack" });
+        await SaveChanges();
     }
 
     public async Task SaveChanges()
     {
         await LocalStorage.SetValueAsync("Inv", Inventory);
         await LocalStorage.SetValueAsync("Storages", Storages);
+        await LocalStorage.SetValueAsync("PlayerName", PlayerName);
+        await LocalStorage.SetValueAsync("CharacterName", CharacterName);
+        await LocalStorage.SetValueAsync("Currency", Currency);
+    }
+
+    public async Task DeleteStorage(Storage storage)
+    {
+        
+    }
+
+    public async Task CharacterNameChanged(string? value)
+    {
+        if (value == null)
+        {
+            value = "";
+        }
+        CharacterName = value;
+        await SaveChanges();
+    }
+
+    public async Task PlayerNameChanged(string? value)
+    {
+        if (value == null)
+        {
+            value = "";
+        }
+        CharacterName = value;
+        await SaveChanges();
+    }
+
+    public async Task CurrencyChanged(string? value)
+    {
+        if (value == null)
+        {
+            value = "";
+        }
+        Currency = value;
+        await SaveChanges();
     }
 
     public List<Storage> Storages = new();
 
     public Storage Inventory = new();
+
+    public string Currency { get; set; }
+
+    public string PlayerName { get; set; }
+
+    public string CharacterName { get; set; }
 
     public class Storage
     {
@@ -87,6 +151,15 @@
             get
             {
                 return Capacity - Items.Sum(x => x.Size);
+
+            }
+        }
+
+        public int CurrentSize
+        {
+            get
+            {
+                return Items.Sum(x => x.Size);
 
             }
         }

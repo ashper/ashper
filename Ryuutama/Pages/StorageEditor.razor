@@ -4,40 +4,59 @@
 @using static Ryuutama.Pages.Index;
 @inject LocalStorageAccessor LocalStorage;
 
+
 @if (ShowTitle)
 {
-    <h3>
-        @if (EditName)
-        {
-            <input type="text" style="background-color:lightyellow; max-width:500px;" value="@Storage.Name"
-           @oninput="@(e => { Storage.Name = e.Value.ToString(); })" />
-        }
-        else
-        {
-            @Storage.Name
-        }
-        @if (AllowNameEdit)
-        {
-            <button type="button" class="btn btn-primary" style="margin-left:10px;"
-            @onclick="@(async () => { EditName = !EditName; await OnChanged.InvokeAsync(Id);})">
+    <h5 class="card-title">
+        <div class="row">
+            <div class="col">
                 @if (EditName)
                 {
-                    <span class="oi oi-check" aria-hidden="true"></span>
+                    <input type="text" value="@Storage.Name" @oninput="@(e => { Storage.Name = e.Value.ToString(); })" class="form-control" />
                 }
                 else
                 {
-                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                    @Storage.Name
                 }
-            </button>
-        }
-    </h3>
+            </div>
+            <div class="col">
+                @if (AllowNameEdit)
+                {
+                    <button type="button" class="btn btn-primary" style="margin-left:10px;"
+                    @onclick="@(async () => { EditName = !EditName; await OnChanged.InvokeAsync(Id);})">
+                        @if (EditName)
+                        {
+                            <span class="oi oi-check" aria-hidden="true"></span>
+                        }
+                        else
+                        {
+                            <span class="oi oi-pencil" aria-hidden="true"></span>
+                        }
+                    </button>
+                    @if (!EditName)
+                    {
+                        <button type="button" class="btn btn-primary" style="margin-left:10px;" @onclick="@(async () => { await OnDelete.InvokeAsync(Id);})">
+                            <span class="oi oi-x" aria-hidden="true"></span>
+                        </button>
+                    }
+                }
+            </div>
+        </div>
+    </h5>
 }
 
 
-<p>Capacity: <input @bind="Storage.Capacity" @bind:event="oninput" />  Remaining: @Storage.RemainingCapacity</p>
+<div class="row">
+    <label for="newCapacity" class="col-sm-2 col-form-label">Maximum Capacity:</label>
+    <div class="col"><input @bind="Storage.Capacity" @bind:event="oninput" class="form-control" id="newCapacity" /> </div>
+    <label for="currentSize" class="col-sm-2 col-form-label">Current Size:</label>
+    <label for="currentSize" class="col-sm-2 col-form-label">@Storage.CurrentSize</label>
+    <label for="remaining" class="col-sm-2 col-form-label">Remaining:</label>
+    <label for="remaining" class="col-sm-2 col-form-label">@Storage.RemainingCapacity</label>
+</div>
 
-<table>
-    <thead>
+<table class="table table-sm">
+    <thead class="thead-light">
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Size</th>
@@ -52,8 +71,8 @@
                 <td>@item.Size</td>
                 <td>@item.Value</td>
                 <td>
-                    <button @onclick="async () => {Storage.Items.Remove(item); await OnChanged.InvokeAsync(Id);}">
-                        X
+                    <button @onclick="async () => {Storage.Items.Remove(item); await OnChanged.InvokeAsync(Id);}" class="btn btn-primary">
+                        <span class="oi oi-x" aria-hidden="true"></span>
                     </button>
                 </td>
             </tr>
@@ -64,23 +83,14 @@
 <EditForm Model="@newItem" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <div class="row">
 
-    <label>
-        Name:
-        <InputText id="newName" @bind-Value="newItem.NewName" />
-    </label>
+        <div class="col"> <InputText id="newName" @bind-Value="newItem.NewName" class="form-control" placeholder="Name" /></div>
+        <div class="col"><InputNumber @bind-Value="newItem.NewSize" class="form-control" placeholder="Size" /></div>
+        <div class="col"><InputNumber @bind-Value="newItem.NewValue" class="form-control" placeholder="Value" /></div>
+        <div class="col"><button type="submit" class="btn btn-primary"> <span class="oi oi-plus" aria-hidden="true"></span></button></div>
 
-    <label>
-        Size:
-        <InputNumber @bind-Value="newItem.NewSize" />
-    </label>
-
-    <label>
-        Value:
-        <InputNumber @bind-Value="newItem.NewValue" />
-    </label>
-
-    <button type="submit">+</button>
+    </div>
 </EditForm>
 
 
@@ -115,6 +125,10 @@
                 Size = newItem.NewSize,
                 Value = newItem.NewValue
             });
+
+        newItem.NewName = "";
+        newItem.NewSize = 1;
+        newItem.NewValue = 1;
 
         await OnChanged.InvokeAsync(Id);
     }
