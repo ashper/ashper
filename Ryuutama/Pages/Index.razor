@@ -18,7 +18,7 @@
 <p>
     <label>
         Currency:
-        <input type="text" Value="@CharacterName" @onchange="@((ChangeEventArgs __e) => CurrencyChanged(__e?.Value?.ToString()))" class="form-control" />
+        <input type="text" Value="@Currency" @onchange="@((ChangeEventArgs __e) => CurrencyChanged(__e?.Value?.ToString()))" class="form-control" />
     </label>
 </p>
 
@@ -68,9 +68,13 @@
         {
             Storages = storages;
         }
-        //var characterName = await LocalStorage.GetValueAsync<string>("CharacterName");
-        //var playerName = await LocalStorage.GetValueAsync<string>("PlayerName");
-        //var currency = await LocalStorage.GetValueAsync<int>("Currency");
+        var characterName = await LocalStorage.GetValueAsync<string>("CharacterName");
+        var playerName = await LocalStorage.GetValueAsync<string>("PlayerName");
+        var currency = await LocalStorage.GetValueAsync<string>("Currency");
+
+        CharacterName = characterName;
+        PlayerName = playerName;
+        Currency = currency;
     }
 
     public async Task AddNewBackpack()
@@ -109,7 +113,7 @@
         {
             value = "";
         }
-        CharacterName = value;
+        PlayerName = value;
         await SaveChanges();
     }
 
