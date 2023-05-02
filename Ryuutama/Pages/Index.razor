@@ -1,11 +1,12 @@
 ﻿@page "/"
 @inject LocalStorageAccessor LocalStorage;
 
-<PageTitle>Storage</PageTitle>
+<PageTitle>Inventory</PageTitle>
 
-<h1>Ryuutama storage</h1>
+<h1>Inventory</h1>
 
-<StorageEditor Storage="Inventory" AllowNameEdit="false" OnChanged="@SaveChanges"></StorageEditor>
+<StorageEditor Storage="Inventory" AllowNameEdit="false" ShowTitle="false" OnChanged="@SaveChanges"></StorageEditor>
+
 <div style="border:1px solid grey; padding:10px; margin-top:10px; margin-bottom:10px;">
 
 @foreach (var storage in Storages)
@@ -15,10 +16,11 @@
         X
     </button>
 }
+
 </div>
 
 <button @onclick="@AddNewBackpack">
-    Add New Backpack
+    Add New Container
 </button>
 
 @code {

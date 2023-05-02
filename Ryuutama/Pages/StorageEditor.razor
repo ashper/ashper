@@ -4,28 +4,34 @@
 @using static Ryuutama.Pages.Index;
 @inject LocalStorageAccessor LocalStorage;
 
-<h3>
-    @if (EditName)
-    {
-        <input class="form-control" type="text"
-               style="background-color:lightyellow;"
-               value="@Storage.Name"
+@if (ShowTitle)
+{
+    <h3>
+        @if (EditName)
+        {
+            <input type="text" style="background-color:lightyellow; max-width:500px;" value="@Storage.Name"
            @oninput="@(e => { Storage.Name = e.Value.ToString(); })" />
-    }
-    else
-    {
-        @Storage.Name
-    }
-    @if (AllowNameEdit)
-    {
-        <button type="button" class="btn btn-primary" style="margin-left:10px;"
+        }
+        else
+        {
+            @Storage.Name
+        }
+        @if (AllowNameEdit)
+        {
+            <button type="button" class="btn btn-primary" style="margin-left:10px;"
             @onclick="@(async () => { EditName = !EditName; await OnChanged.InvokeAsync(Id);})">
-            @(
-                EditName ? "Save" : "Edit"
-                )
-        </button>
-    }
-</h3>
+                @if (EditName)
+                {
+                    <span class="oi oi-check" aria-hidden="true"></span>
+                }
+                else
+                {
+                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                }
+            </button>
+        }
+    </h3>
+}
 
 
 <p>Capacity: <input @bind="Storage.Capacity" @bind:event="oninput" />  Remaining: @Storage.RemainingCapacity</p>
@@ -86,10 +92,16 @@
     public bool AllowNameEdit { get; set; } = true;
 
     [Parameter]
+    public bool ShowTitle { get; set; } = true;
+
+    [Parameter]
     public string Id { get; set; }
 
     [Parameter]
     public EventCallback<string> OnChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnDelete { get; set; }
 
     public bool EditName { get; set; } = false;
 
