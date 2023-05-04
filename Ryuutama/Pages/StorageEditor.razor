@@ -4,7 +4,34 @@
 @using static Ryuutama.Pages.Index;
 @inject LocalStorageAccessor LocalStorage;
 
+<style> 
+ 
+.storage {
+    font-size:0.8rem;
+}
 
+.storage h5 {
+    font-size:1rem;
+}
+
+.form-control {
+    font-size: 0.8rem;
+    padding: .2rem .5rem;
+}
+
+.col-form-label {
+    line-height: 0.8;
+}
+
+.btn 
+{
+    font-size: 0.8rem;
+    padding: .2rem .5rem;
+}
+ 
+</style> 
+
+<div class="storage">
 @if (ShowTitle)
 {
     <h5 class="card-title">
@@ -93,6 +120,7 @@
     </div>
 </EditForm>
 
+</div>
 
 @code {
     [Parameter]
